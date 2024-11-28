@@ -50,6 +50,7 @@
   };
   const addBuy = () => {
     const buyToAdd = JSON.parse(JSON.stringify(state.value));
+
     store.methods.saveBuy(buyToAdd)
         .then((result: boolean) => {
           if (result) {

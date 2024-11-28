@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeInjectionKey } from '@/store/default';
-import ProductPriceChartDialog from '@/components/Product/PriceChartDialog.vue';
+import ProductPriceChartDialog from '~/components/Product/ProductPriceChartDialog.vue';
 import type SgKaufState from "@/types/SgKaufState";
 import type SgKaufMethods from '@/types/SgKaufMethods';
 import type Product from "@/types/Product";
