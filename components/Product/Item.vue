@@ -16,7 +16,7 @@ const { date, time, shopName } = defineProps<{
 const store = inject(storeInjectionKey) as {
   state: SgKaufState,
   methods: SgKaufMethods
-};
+}; 
 const graphShown = ref(false);
 </script>
 
@@ -37,7 +37,7 @@ const graphShown = ref(false);
         @click.prevent="store.methods.removeProduct(date, time, product)"
       ></button>
       <Button 
-        @click="graphShown = !graphShown;"
+        @click="graphShown = !graphShown;" 
         icon="pi pi-chart-line"
         class="p-button-rounded p-button-text"
       />

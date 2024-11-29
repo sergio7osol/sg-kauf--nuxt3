@@ -6,8 +6,6 @@ import type ResponseInfo from '@/types/ResponseInfo';
 import type PriceInfo from '@/types/PriceInfo';
 import type { ProductWithDate } from '@/types/Product';
 
-const baseURL = 'http://localhost:3000';
-
 const apiClient = axios.create({
     baseURL: 'http://localhost:3000',
     withCredentials: false,
@@ -44,42 +42,14 @@ export function postEvent(event: any) { // new post request
             return response.data;
         });
 }
-export async function createBuy(dataSuffix: string): Promise<ResponseInfo> {
-    const { data, error } = await useFetch<ResponseInfo>(
-      `${baseURL}/save-buy?${dataSuffix}`,
-      {
-        pick: ['success', 'message'],
-        key: String(Date.now()),
-      }
-    );
-
-    if (error.value) {
-        showError({
-          statusCode: 500,
-          statusMessage: "Internal Server Error by creating a new buy",
+export function createBuy(dataSuffix: string): Promise<ResponseInfo> {
+    return apiClient.get('/save-buy?' + dataSuffix)
+        .then(response => {
+            if (response.status !== 200) {
+                throw Error('Looks like there was a problem. Status Code: ' + response.status);
+            }
+            return response.data;
         });
-
-        return {
-          success: false,
-          message: "500 Internal Server Error fetching data for create buy",
-        };
-    } else if (data && data.value && data.value.success && data.value.message) {
-      // TODO: change according to error codes that will be sent
-      return {
-        success: data.value.success,
-        message: data.value.message,
-      };
-    } else {   
-        showError({
-          statusCode: 404,
-          statusMessage: 'Error creating a new buy',
-        });
-
-        return {
-          success: false,
-          message: '404 Error fetching data for create buy',
-        };
-    }
 }
 export function deleteBuy(dataSuffix: string): Promise<BuyInfo[]> {
     return apiClient.get('/remove-buy?' + dataSuffix)

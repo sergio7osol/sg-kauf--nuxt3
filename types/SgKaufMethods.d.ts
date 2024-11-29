@@ -7,7 +7,7 @@ export default interface SgKaufMethods {
     setShoppingDates: (newShoppingDates: DetailedDateInfo[]) => void,
     setActiveDate: (newDate: string) => boolean,
     setLoadingDate: (newDate: string) => void,
-    saveBuy: (buy: BuyInfo) => void,
+    saveBuy: (buy: BuyInfo) => Promise<boolean>,
     removeBuy: (buy: BuyInfo) => void, 
     fetchProductNames: () => void,
     fetchProductDescriptions: () => void,

@@ -14,7 +14,6 @@ import {
   getProductTimelineData,
   fetchRangeSum,
   fetchWholeSum,
-  fetchWeatherForecast,
 } from "@/services/ShoppingDateService";
 import type SgKaufState from "@/types/SgKaufState";
 import type SgKaufMethods from "@/types/SgKaufMethods";
@@ -89,30 +88,22 @@ const methods: SgKaufMethodsLocal = {
     state.loadingDate = newDate;
   },
   saveBuy(buy: BuyInfo) {
-    const existingShoppingDate = state.shoppingDates.find(
-      (shoppingDate: DetailedDateInfo) => shoppingDate.date === buy.date
-    );
+    const existingShoppingDate = state.shoppingDates.find((shoppingDate: DetailedDateInfo) => shoppingDate.date === buy.date);
     const existingBuy =
       existingShoppingDate &&
       existingShoppingDate.buys?.find((buyItem: BuyInfo) => {
         return buyItem.time === buy.time;
       });
+
     if (existingBuy) {
-      if (
-        confirm(
-          "The buy you try to add already exists, do you want to overwrite it with the new data?"
-        )
-      ) {
-        console.log(
-          `Confirmed prompt to overwrite the existing buy. The buy on ${buy.date} at ${buy.time} is going to be overwritten...`
-        );
+      if (confirm("The buy you try to add already exists, do you want to overwrite it with the new data?")) {
+        console.log(`Confirmed prompt to overwrite the existing buy. The buy on ${buy.date} at ${buy.time} is going to be overwritten...`);
       } else {
-        console.log(
-          `Rejected prompt to overwrite the existing buy. The buy on ${buy.date} at ${buy.time} is NOT going to be overwritten...`
-        );
+        console.log(`Rejected prompt to overwrite the existing buy. The buy on ${buy.date} at ${buy.time} is NOT going to be overwritten...`);
         return false;
       }
     }
+
     let urlSuffix = `date=${buy.date}&time=${buy.time}`;
     urlSuffix += `&currency=${buy.currency}`;
     urlSuffix += `&country=${buy.address.country}`;
@@ -125,19 +116,15 @@ const methods: SgKaufMethodsLocal = {
 
     return createBuy(urlSuffix)
       .then((data: ResponseInfo) => {
-        if (data.success) {
+        if (data?.success) {
           // TODO: implement response data validation (hash)?
-          console.log(
-            "Saving buy. Success: ",
-            data.success,
-            " Status: ",
-            data.message
-          );
+          console.log("Saving buy. Success: ", data.success, " Status: ", data.message);
           methods._addBuy(buy, existingShoppingDate, existingBuy);
           methods.setActiveDate(buy.date);
+
           return true;
         } else {
-          throw Error(data.message);
+          throw Error(data?.message);
         }
         // state.activeDate
         // thisApp.activeDateBuys = [...data];
