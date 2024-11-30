@@ -1,7 +1,13 @@
 <script setup lang="ts">
-  import store, { storeInjectionKey } from '@/store/default';
+useHead({
+  title: 'Money Tracker',
+  meta: [
+    { name: "description", content: 'App about tracking your expences' }
+  ],
+});
+import store, { storeInjectionKey } from '@/store/default';
 
-  provide(storeInjectionKey, store); 
+provide(storeInjectionKey, store); 
 </script>  
 
 <template>

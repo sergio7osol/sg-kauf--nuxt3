@@ -1,6 +1,6 @@
 <script setup>
   useHead({
-    titleTemplate: (titleChunk) => titleChunk ? `${titleChunk} - Money tracking` : 'Money tracking App',
+    titleTemplate: (titleChunk) => titleChunk ? `${titleChunk} - Money Tracker` : 'Money Tracker',
     meta: [
       { name: 'description', content: 'Money tracking and planning App' },
     ],
