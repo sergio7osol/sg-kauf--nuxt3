@@ -1,0 +1,11 @@
+# GET http://localhost:3000/api/helloWorld
+GET http://localhost:3001/api/helloWorld?hello=world&color=greenTrur
+
+###
+
+POST http://localhost:3001/api/helloWorld?hello=world&color=green
+
+{
+    "framework": "Nuxt 3",
+    "name": "Sergio"
+}
