@@ -13,7 +13,7 @@ export default function useSortShoppingDates(shoppingDates:  Ref<DetailedDateInf
         datesCopy.sort((a, b) => {
             const aDate: number = convertDateToMills(a.date);
             const bDate: number = convertDateToMills(b.date);
-
+            
             if (sortOrder.value === 'ascend') {
                 return aDate - bDate;
             } else if (sortOrder.value === 'descend') {
@@ -22,7 +22,7 @@ export default function useSortShoppingDates(shoppingDates:  Ref<DetailedDateInf
                 return 0;
             }
         });
-
+        
         return datesCopy;
     });
 

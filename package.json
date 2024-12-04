@@ -11,12 +11,14 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.8.0",
     "@primevue/nuxt-module": "^4.2.3",
     "@primevue/themes": "^4.2.3",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "lodash": "^4.17.21",
-    "nuxt": "^3.14.159",
+    "nuxt": "^3.14.1592",
+    "pinia": "^2.2.8",
     "primevue": "^4.2.3",
     "vue": "latest",
     "vue-router": "latest",
@@ -24,5 +26,8 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.17.13"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }

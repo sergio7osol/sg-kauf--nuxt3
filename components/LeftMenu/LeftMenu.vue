@@ -1,34 +1,37 @@
 <script setup lang="ts">
-  import useShoppingDates from '@/composables/useShoppingDates';
-  import useSortShoppingDates from '@/composables/useSortShoppingDates';
-  import useActiveDateBuys from '@/composables/useActiveDateBuys';
-  // import getMonthString from "@/utils/getMonthString"; 
-  import type DetailedDateInfo from "@/types/DetailedDateInfo";
-  
-  const { shoppingDates } = useShoppingDates(); 
-  const { sortOrder, sortedShoppingDates, changeSortOrder } = useSortShoppingDates(shoppingDates); 
-  const { activeDate, setActiveDate, loadingDate, setLoadingDate } = useActiveDateBuys();
-  const chooseDate = (date: string) => {
-    setLoadingDate(date); 
-    setActiveDate(date);
+import { useBuyDatesStore } from '@/stores/BuyDatesStore';
+import useSortShoppingDates from '@/composables/useSortShoppingDates';
+// import getMonthString from "@/utils/getMonthString"; 
+import type DetailedDateInfo from "@/types/DetailedDateInfo";
+
+const buyDatesStore = useBuyDatesStore();
+const { shoppingDates, loadingDate, activeDate } = storeToRefs(useBuyDatesStore());
+
+const { sortOrder, sortedShoppingDates, changeSortOrder } = useSortShoppingDates(shoppingDates);
+const chooseDate = (date: string) => {
+  buyDatesStore.loadingDate = date;
+  buyDatesStore.setActiveDate(date);
+}
+const countProducts = (date: DetailedDateInfo): number => {
+  if (date.count) {
+    return date.count;
   }
-  const countProducts = (date: DetailedDateInfo): number => {
-    if (date.count) {
-      return date.count;
+  let productQuantity: number | undefined = date?.buys?.reduce((quantity, buy) => {
+    if (buy.products && buy.products.length) {
+      quantity += buy.products.length;
     }
-    let productQuantity: number | undefined = date?.buys?.reduce((quantity, buy) => {
-      if (buy.products && buy.products.length) {
-        quantity += buy.products.length;
-      }
-      return quantity;
-    }, 0);
-    productQuantity = productQuantity === undefined ? 0 : productQuantity;
-    return productQuantity;
-  };
+    return quantity;
+  }, 0);
+  productQuantity = productQuantity === undefined ? 0 : productQuantity;
+  return productQuantity;
+};
+
+buyDatesStore.getShoppingDates();
 </script>
 
 <template>
   <nav id="sidebarMenu" class="d-md-block sidebar collapse vertical-menu pt-3 pb-3">
+    
       <LeftMenuSortBox :active-sort-order="sortOrder" @@sort-order="changeSortOrder($event)" />
       <ul class="nav flex-column vertical-menu__list">
         <li class="nav-item vertical-menu__item" v-for="item in sortedShoppingDates" :key="item.date">
