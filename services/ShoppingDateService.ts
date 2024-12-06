@@ -17,23 +17,35 @@ const apiClient = axios.create({
     }
 })
 
-export function getAllDates(): Promise<DetailedDateInfo[]> {
-    return apiClient.get('/list-dates')
-        .then(response => {
-            if (response.status !== 200) {
-                throw Error('Looks like there was a problem. Status Code: ' + response.status);
-            }
-            return response.data;
-        })
+const adjustResponse = (error: any, data: any, goalText: string) => {
+  if (error.value) {
+    showError({
+      statusCode: 500,
+      statusMessage: `Internal Server Error by ${goalText}`,
+    });
+
+    return false;
+  } else if (data && data.value && data.value instanceof Array) {
+    return data.value;
+  } else {
+    showError({
+      statusCode: 404,
+      statusMessage: `Error ${goalText}`,
+    });
+
+    return [];
+  }
+};
+
+export async function getAllDates(): Promise<DetailedDateInfo[] | false> {
+    const { data, error } = await useFetch<ResponseInfo>(`${baseURL}/list-dates`);
+    
+    return adjustResponse(error, data, 'getting all dates');
 }
-export function readDate(newDate: string): Promise<BuyInfo[]> {
-    return apiClient.get(`/read-date?date=${newDate}`)
-        .then(response => {
-            if (response.status !== 200) {
-                throw Error('Looks like there was a problem. Status Code: ' + response.status);
-            }
-            return response.data;
-        })
+export async function readDate(newDate: string): Promise<BuyInfo[]> {
+    const { data, error } = await useFetch<ResponseInfo>(`${baseURL}/read-date?date=${newDate}`);
+
+    return adjustResponse(error, data, 'reading date');
 }
 export function postEvent(event: any) { // new post request
     return apiClient.post('/events', event)
