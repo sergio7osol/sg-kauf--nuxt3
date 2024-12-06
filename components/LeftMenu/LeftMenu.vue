@@ -8,21 +8,19 @@ const buyDatesStore = useBuyDatesStore();
 const { shoppingDates, loadingDate, activeDate } = storeToRefs(useBuyDatesStore());
 
 const { sortOrder, sortedShoppingDates, changeSortOrder } = useSortShoppingDates(shoppingDates);
-const chooseDate = (date: string) => {
-  buyDatesStore.loadingDate = date;
-  buyDatesStore.setActiveDate(date);
-}
+
 const countProducts = (date: DetailedDateInfo): number => {
   if (date.count) {
     return date.count;
   }
   let productQuantity: number | undefined = date?.buys?.reduce((quantity, buy) => {
-    if (buy.products && buy.products.length) {
+    if (buy?.products?.length) {
       quantity += buy.products.length;
     }
     return quantity;
   }, 0);
   productQuantity = productQuantity === undefined ? 0 : productQuantity;
+  
   return productQuantity;
 };
 
@@ -45,7 +43,7 @@ buyDatesStore.getShoppingDates();
              }"
              aria-current="page"
              href="#"
-             @click.prevent="chooseDate(item.date)"
+             @click.prevent="buyDatesStore.chooseDate(item.date)"
           >
             <span class="vertical-menu__count-icon">{{ countProducts(item) }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="feather feather-shopping-cart vertical-menu__item-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
