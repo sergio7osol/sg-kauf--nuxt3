@@ -1,15 +1,13 @@
 
 <script setup lang="ts">
-  import type { ShallowUnwrapRef } from 'vue';
-  import type SgKaufState from '~~/types/SgKaufState';
-  import type BuyInfo from '~~/types/BuyInfo';
+  import { useBuyDatesStore } from '@/stores/BuyDatesStore';
+  import type BuyInfo from '@/types/BuyInfo';
 
   defineProps<{ 
     buyData: BuyInfo
   }>();
 
-  const store = inject('store') as { state: ShallowUnwrapRef<SgKaufState>, methods: { removeBuy: Function } }; // TODO: set correct type
-  const remove = (buy: BuyInfo) => store.methods.removeBuy(buy);
+  const buyDatesStore = useBuyDatesStore();
 </script>
  
 <template>
@@ -24,7 +22,7 @@
       {{ buyData.shopName }}
       - {{ buyData.payMethod }} -
       {{ buyData.currency }}
-      <button class="btn btn--icon-remove" @click="remove(buyData)"></button>
+      <button class="btn btn--icon-remove" @click="buyDatesStore.removeBuy(buyData)"></button>
     </caption>
     <thead class="product product--default buy-table__head">
     <tr class="buy-table__row buy-table__head-row--head">
@@ -39,7 +37,7 @@
     </tr> 
     </thead>
     <tbody class="product">
-    <ProductAddNewItemTableRow :date="buyData.date" :time="buyData.time" :key="Date.now()" />
+    <!-- <ProductAddNewItemTableRow :date="buyData.date" :time="buyData.time" :key="Date.now()" /> -->
     <ProductItem v-for="(product, index) in buyData.products" 
       class="buy-table__row buy-table__head-row--body" 
       :date="buyData.date"

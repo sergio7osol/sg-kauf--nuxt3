@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { storeInjectionKey } from '@/store/default';
-import ProductPriceChartDialog from '~/components/Product/ProductPriceChartDialog.vue';
-import type SgKaufState from "@/types/SgKaufState";
-import type SgKaufMethods from '@/types/SgKaufMethods';
+import { useBuyDatesStore } from '@/stores/BuyDatesStore';
+import ProductPriceChartDialog from '@/components/Product/ProductPriceChartDialog.vue';
 import type Product from "@/types/Product";
 import type { ShopName } from "@/types/StaticBuyInfoTypes";
 
@@ -13,10 +11,8 @@ const { date, time, shopName } = defineProps<{
   product: Product;
   index: number;
 }>();
-const store = inject(storeInjectionKey) as {
-  state: SgKaufState,
-  methods: SgKaufMethods
-}; 
+
+const buyDatesStore = useBuyDatesStore();
 const graphShown = ref(false);
 </script>
 
@@ -34,7 +30,7 @@ const graphShown = ref(false);
     <td class="buy-table__cell buy-table__cell--actions buy-table__head-cell--body"> 
       <button
         class="btn btn--icon-remove"
-        @click.prevent="store.methods.removeProduct(date, time, product)"
+        @click.prevent="buyDatesStore.removeProduct(date, time, product)"
       ></button>
       <Button 
         @click="graphShown = !graphShown;" 

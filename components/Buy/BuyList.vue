@@ -1,9 +1,7 @@
 <script setup lang="ts">
-  import type { ShallowUnwrapRef } from 'vue';
-  import type SgKaufState from '@/types/SgKaufState';
+import { useBuyDatesStore } from '@/stores/BuyDatesStore';
 
-  const store = inject('store') as { state: ShallowUnwrapRef<SgKaufState>, methods: { getRangeSum: Function } };
-  const { activeDate } = useActiveDateBuys();
+const { activeDate } = storeToRefs(useBuyDatesStore());
 </script> 
  
 <template>
