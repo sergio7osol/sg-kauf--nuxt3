@@ -156,7 +156,7 @@ export function getProductTimelineData(dataSuffix: string): Promise<ProductWithD
             return response.data;
         }) 
 }
-export function fetchRangeSum(dataSuffix: string): Promise<number> {
+export function fetchRangeSum(dataSuffix: string): Promise<PriceInfo> {
     return apiClient.get(`/get-calc-sum?${dataSuffix}`)
         .then(response => {
             if (response.status !== 200) {

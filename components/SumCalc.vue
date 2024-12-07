@@ -1,26 +1,33 @@
 <script setup lang="ts">
-// import Datepicker from 'vue3-datepicker'
-// import { ShallowUnwrapRef } from "vue";
+import Datepicker from 'vue3-datepicker';
 import type PriceInfo from "@/types/PriceInfo.d.ts";
 import type { Currency } from "@/types/StaticBuyInfoTypes.d.ts";
-import type SgKaufState from "@/types/SgKaufState.d.ts";
+import { useBuyDatesStore } from "@/stores/BuyDatesStore";
 
-const store = inject('store') as { state: Ref<SgKaufState>, methods: { getRangeSum: Function, getWholeSum: Function } };
+const buyDatesStore = useBuyDatesStore();
 
-  console.log('store: ', store);
-  
 // const dateRange: DateRange = reactive({
 // });
-const from = ref < Date > (new Date(2021, 0, 15));
-const to = ref < Date > (new Date());
+const from = ref<Date>(new Date(2021, 0, 15)); 
+const to = ref<Date>(new Date()); 
+const formattedFrom = computed(() => from.value.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}));
+const formattedTo = computed(() => to.value.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}));
 const currency: Currency = 'EUR'; // TODO: implement dynamic currency exchange / calculating different currencies separately
-const calculatedSum = ref < PriceInfo > ({ cost: 0, discount: 0 });
+const calculatedSum = ref<PriceInfo>({ cost: 0, discount: 0 });
 const roundedCost = computed(() => calculatedSum.value.cost ? calculatedSum.value.cost.toFixed(2) : 0);
 const roundedDiscount = computed(() => calculatedSum.value.discount ? calculatedSum.value.discount.toFixed(2) : 0);
 const roundedSum = computed(() => (calculatedSum.value.cost - calculatedSum.value.discount).toFixed(2));
 
 const sendGetWholeSum = () => {
-  store.methods.getWholeSum()
+  buyDatesStore.getWholeSum()
     .then((result: any) => {
       calculatedSum.value = result;
     })
@@ -34,7 +41,7 @@ const getCalcSum = () => {
   const toValue = getDateString(to.value);
 
   const urlSuffix = `from=${fromValue}&to=${toValue}`;
-  store.methods.getRangeSum(urlSuffix)
+  buyDatesStore.getRangeSum(urlSuffix)
     .then((data: PriceInfo) => {
       calculatedSum.value = data;
     })
@@ -58,12 +65,13 @@ const getCalcSum = () => {
 
 <template>
   <div class="border-primary mb-3 sum-calc">
-    <!-- <div class="card-header">{{ from }} - {{ to }}</div> -->
+    <div class="card-header">{{ formattedFrom }} - {{ formattedTo }}</div>
     <div class="card-body text-info sum-calc__body">
       <div class="sum-calc__price">
         <h5 class="card-title sum-calc__title">
           {{ roundedSum }}</h5>
-        <span class="sum-calc__currency">{{ currency }}</span></div>
+        <span class="sum-calc__currency">{{ currency }}</span>
+      </div>
       <div class="sum-calc__payment mt-2">
         <div class="sum-calc__cost-col">
           <span class="sum-calc__payment-name">Cost: </span>
@@ -77,21 +85,16 @@ const getCalcSum = () => {
       <div class="card-body sum-calc__controls">
         <div class="sum-calc__set-range">
           <p>from - to</p>
-          <!-- <Datepicker
-              v-model="from"
-              input-format="dd.MM.yyyy"
-          /> -->
-          <!--
+          <client-only>
+            <Datepicker v-model="from" input-format="dd.MM.yyyy" />
+            <!--
               :upperLimit="to"
               :locale="locale"
               :lowerLimit="from"
               :startingView="to.toString()"
-          -->
-          <!-- <Datepicker
-              v-model="to"
-              :upperLimit="to"
-              inputFormat="dd.MM.yyyy"
-          /> -->
+            -->
+            <Datepicker v-model="to" :upperLimit="to" inputFormat="dd.MM.yyyy" />
+          </client-only>
         </div>
         <div class="sum-calc__buttons">
           <button class="btn btn-success mt-4 sum-calc__submit" @click="getCalcSum">Calculate Sum</button>
@@ -106,13 +109,24 @@ const getCalcSum = () => {
 .sum-calc {
   background-color: var(--default-bg-color) !important;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1), 0px -4px 8px rgba(255, 255, 255, 0.8);
-  border: 1px solid #efefef !important;
+  border: 1px solid #ddd !important;
+  border-radius: .5rem;
   margin-left: auto;
+  overflow: hidden;
+}
+
+.card-header {
+  background-color: #f2f2f2;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  color: #666;
+  font-size: 1.3rem;
 }
 
 .sum-calc__body {
   display: flex;
   align-items: center;
+  padding: .5rem; 
 }
 
 .sum-calc__price {
@@ -121,7 +135,7 @@ const getCalcSum = () => {
 }
 
 .sum-calc__payment {
-  padding-left: 1.5rem;
+  padding: 0 1.5rem;
 }
 
 .sum-calc__set-range {

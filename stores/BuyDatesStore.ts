@@ -1,4 +1,4 @@
-import { getAllDates, readDate } from '@/services/ShoppingDateService';
+import { getAllDates, readDate, fetchWholeSum, fetchRangeSum } from '@/services/ShoppingDateService';
 import type DetailedDateInfo from '@/types/DetailedDateInfo';
 import type BuyInfo from "@/types/BuyInfo";
 
@@ -63,6 +63,30 @@ export const useBuyDatesStore = defineStore("BuyDatesStore", {
     chooseDate (date: string): void {
       this.loadingDate = date;
       this.setActiveDate(date);
+    },
+    getWholeSum() {
+      return fetchWholeSum()
+        .then((data) => {
+          const wholeSum = data.wholeSum;
+          return new Promise((resolve, reject) => {
+            if (
+              wholeSum &&
+              typeof wholeSum === "object" &&
+              typeof wholeSum.cost === "number" &&
+              typeof wholeSum.discount === "number"
+            ) {
+              resolve(wholeSum);
+            } else {
+              reject(data);
+            }
+          });
+        })
+        .catch(function (err) {
+          console.log("getWholeSum", "Fetch Error :-S", err);
+        });
+    }, 
+    getRangeSum(dataSuffix: string) {
+      return fetchRangeSum(dataSuffix);
     }
   },
 });
