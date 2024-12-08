@@ -1,26 +1,22 @@
 <script setup lang="ts">
-  import { storeInjectionKey } from '~~/store/default';
-  import type BuyInfo from '~~/types/BuyInfo';
-  import type SgKaufState from '~~/types/SgKaufState';
-  import type SgKaufMethods from '~~/types/SgKaufMethods';
+  import { useBuyDatesStore } from "@/stores/BuyDatesStore";
+  import type BuyInfo from '@/types/BuyInfo';
 
-  const store = inject(storeInjectionKey) as {
-    state: SgKaufState,
-    methods: SgKaufMethods 
-  };
+  const buyDatesStore = useBuyDatesStore();
+
   const initState: BuyInfo = {
       date: '',
-      time: "00:00",
-      currency: "EUR",
+      time: '00:00',
+      currency: 'EUR',
       address: {
-          country: "Germany",
-          index: "",
-          city: "Hamburg",
-          street: "",
-          houseNumber: ""
+          country: 'Germany',
+          index: '',
+          city: 'Hamburg',
+          street: '',
+          houseNumber: ''
       },
-      payMethod: "EC card",
-      shopName: "",
+      payMethod: 'EC card',
+      shopName: '',
       products: []
   };
   const state = ref<BuyInfo>(initState);
@@ -51,8 +47,8 @@
   const addBuy = () => {
     const buyToAdd = JSON.parse(JSON.stringify(state.value));
 
-    store.methods.saveBuy(buyToAdd)
-        .then((result: boolean) => {
+    buyDatesStore.saveBuy(buyToAdd)
+        .then((result: boolean | void) => {
           if (result) {
             console.log('Buy saved. Resetting Edit Panel...');
             state.value = initState as BuyInfo;
