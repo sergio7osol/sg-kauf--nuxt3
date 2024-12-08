@@ -1,11 +1,11 @@
 <script setup>
-  definePageMeta({
-    layout: 'plain',
-  });
+definePageMeta({
+  layout: 'plain',
+});
 
-  const user = useUser();  
- 
-</script> 
+  const user = useUser();
+</script>
+
 <template>
   <form @submit.prevent="user.login">
     <h1>Login</h1>

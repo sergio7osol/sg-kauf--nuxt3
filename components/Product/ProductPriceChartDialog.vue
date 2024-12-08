@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { storeInjectionKey } from '~~/store/default';
+import { useBuyDatesStore } from '@/stores/BuyDatesStore';
 import type { ProductWithDate } from "~~/types/Product";
 import type { ProductTimelineRequestInfo } from "~~/types/ProductTimelineInfo";
-import type SgKaufState from "~~/types/SgKaufState";
-import type SgKaufMethods from '~~/types/SgKaufMethods';
 import type { Measure, ShopName } from "../../types/StaticBuyInfoTypes";
 
 const props = defineProps<{
@@ -16,11 +14,7 @@ const emit = defineEmits<{
   (e: "@close-dialog"): void;
 }>();
 
-const store = inject(storeInjectionKey) as {
-  state: SgKaufState,
-  methods: SgKaufMethods
-};
-
+const { activeDate } = storeToRefs(useBuyDatesStore());
 const priceTimeline = ref<[number, number][]>([]);
 
 const showComparisonGraph = (productTimelineRequest: ProductTimelineRequestInfo) => {
@@ -71,23 +65,13 @@ watch(props, ({ productName, measure, shopName }) => {
 </script>
 
 <template>
-  <Dialog
-    :visible="showDialog"
-    :breakpoints="{ '960px': '75vw', '640px': '90vw' }"
-    :style="{ width: '50vw' }"
-    :maximizable="true"
-    :modal="true"
-	  :dismissable-mask="true"
-  >
-    <p>Active date: {{ store.state.activeDate.date }}</p>
+  <Dialog :visible="showDialog" :breakpoints="{ '960px': '75vw', '640px': '90vw' }" :style="{ width: '50vw' }"
+    :maximizable="true" :modal="true" :dismissable-mask="true">
+    <p>Active date: {{ activeDate.date }}</p>
     <p>
       <b>{{ priceTimeline.length }}</b> buys
     </p>
-    <ProductPriceChart
-      :chart-data="priceTimeline"
-      :product-name="productName"
-      :shop-name="props.shopName"
-    />
+    <ProductPriceChart :chart-data="priceTimeline" :product-name="productName" :shop-name="props.shopName" />
 
     <template #footer>
       <Button label="Close" icon="pi pi-times" @click="emit('@close-dialog')" autofocus />

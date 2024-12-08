@@ -5,9 +5,6 @@ useHead({
     { name: "description", content: 'App about tracking your expences' }
   ],
 });
-import store, { storeInjectionKey } from '@/store/default';
-
-provide(storeInjectionKey, store); 
 </script>  
 
 <template>
@@ -31,7 +28,7 @@ provide(storeInjectionKey, store);
   flex-grow: 0;
   height: 100%;
   overflow-y: auto;
-  padding-right: 1.1rem;
+  /* padding-right: 1.1rem; */
   position: relative;
   z-index: 1;
   background-color: var(--default-menu-bg-color);

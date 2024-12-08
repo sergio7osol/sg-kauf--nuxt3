@@ -17,7 +17,7 @@
           <li class="nav-item text-nowrap"><hr class="dropdown-divider"></li>
           <li class="nav-item text-nowrap"><a class="dropdown-item" href="#">Post 3</a></li>
           <li class="nav-item">
-            <form class="d-flex"  @submit.prevent="goToWeatherPage">
+            <form class="d-flex"  @submit.prevent="">
               <input class="form-control form-control-dark w-100 me-2" placeholder="Search" aria-label="Search" type="text">
               <button class="btn btn-secondary" type="submit">Search</button>
             </form>
@@ -30,27 +30,6 @@
     </nav>
   </header>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { useRoute } from 'vue-router';
-
-export default defineComponent({
-  name: 'MainHeader',
-  setup() {
-    const goToWeatherPage = () => {
-      // $router.push('/weather')
-      const route = useRoute();
-      console.log('Route: ', route.params.id);
-
-    };
-
-    return {
-      goToWeatherPage
-    }
-  }
-})
-</script>
 
 <style scoped>
 .main-logo {
