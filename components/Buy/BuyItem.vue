@@ -37,7 +37,7 @@
     </tr> 
     </thead>
     <tbody class="product">
-    <!-- <ProductAddNewItemTableRow :date="buyData.date" :time="buyData.time" :key="Date.now()" /> -->
+    <ProductAddNewItemTableRow :date="buyData.date" :time="buyData.time" :key="Date.now()" />
     <ProductItem v-for="(product, index) in buyData.products" 
       class="buy-table__row buy-table__head-row--body" 
       :date="buyData.date"

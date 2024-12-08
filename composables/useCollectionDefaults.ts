@@ -1,30 +1,26 @@
-import { storeInjectionKey } from '@/store/default';
-import type Product from "@/types/Product";
-import type SgKaufState from '@/types/SgKaufState';
-import type SgKaufMethods from '@/types/SgKaufMethods';
+import { useBuyDatesStore } from '@/stores/BuyDatesStore';
+import type Product from '@/types/Product';
 
 export default function useCollectionDefaults() {
-    const store = inject(storeInjectionKey) as {
-        state: SgKaufState,
-        methods: SgKaufMethods
-    };
-    const { ValueCollection } = toRefs(store.state);
-    const { fetchProductNames, fetchProductDescriptions, fetchProductDefaults } = store.methods;
-    const findDefaultValue = (event: Event): Product | string => {
-        const target = event.target as HTMLInputElement;
-        const currentValue = target.value;
-        const foundDefault = ValueCollection.value.defaults.find((defaultProductInfo) => defaultProductInfo.name === currentValue);
-        return foundDefault ? foundDefault : currentValue;
-    };
+  const buyDatesStore = useBuyDatesStore();
+  const { ValueCollection } = storeToRefs(useBuyDatesStore());
 
-    onMounted(() => {
-        fetchProductNames();
-        fetchProductDescriptions();
-        fetchProductDefaults();
-    }); // TODO: before?
+  const findDefaultValue = (event: Event): Product | string => {
+    const target = event.target as HTMLInputElement;
+    const currentValue = target.value;
+    const foundDefault = ValueCollection.value.defaults.find((defaultProductInfo) => defaultProductInfo.name === currentValue);
 
-    return {
-        ValueCollection,
-        findDefaultValue
-    };
+    return foundDefault ? foundDefault : currentValue;
+  };
+
+  onMounted(() => {
+    buyDatesStore.fetchProductNames();
+    buyDatesStore.fetchProductDescriptions();
+    buyDatesStore.fetchProductDefaults();
+  }); // TODO: before?
+
+  return {
+    ValueCollection,
+    findDefaultValue,
+  };
 }
