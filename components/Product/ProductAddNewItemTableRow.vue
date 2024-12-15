@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
 import { useBuyDatesStore } from '@/stores/BuyDatesStore';
+import useCollectionDefaults from '@/composables/useCollectionDefaults';
 import type Product from '@/types/Product';
 
 const { date, time } = defineProps<{
@@ -10,7 +11,7 @@ const { date, time } = defineProps<{
 
 const buyDatesStore = useBuyDatesStore();
 
-const { ValueCollection, findDefaultValue } = useCollectionDefaults();
+const collectionDefaults = useCollectionDefaults();
 const newProduct: Product = reactive({
   name: '',
   price: 0,
@@ -44,7 +45,7 @@ const sendProductToSave = () => {
 };
 const focusRefElement = (refElement: Ref<HTMLInputElement | HTMLButtonElement | null>) => refElement.value?.focus();
 const productAutocomplete = (event: Event) => {
-  const foundDefault = findDefaultValue(event);
+  const foundDefault = collectionDefaults.findDefaultValue(event);
   if (typeof foundDefault === 'object') {
     newProduct.name = foundDefault.name;
     newProduct.price = foundDefault.price || 0;
@@ -62,6 +63,7 @@ const productAutocomplete = (event: Event) => {
     newProduct.discount = 0;
   }
 };
+const deriveProductName = (nameValue: string | Product) => typeof nameValue === 'string' ? nameValue : nameValue.name; // TODO: bring to a common interface
 
 onMounted(() => {
   focusRefElement(productNameTextField);
@@ -72,48 +74,97 @@ onMounted(() => {
   <tr class="buy-table__row buy-table__head-row--body buy-table__head-row--add">
     <td class="buy-table__cell"></td>
     <td class="buy-table__cell buy-table__head-cell--body">
-      <input class="form-control product-info__name" v-model="newProduct.name" ref="productNameTextField"
-        @input="productAutocomplete" list="product-names" type="text" />
+      <input
+        class="form-control product-info__name"
+        v-model="newProduct.name"
+        ref="productNameTextField"
+        @input="productAutocomplete"
+        list="product-names"
+        type="text"
+      />
       <datalist id="product-names">
-        <option v-for="(nameValue, index) in ValueCollection.defaults" :value="nameValue.name || nameValue"
-          :key="(nameValue.name || nameValue) + String(index)" />
+        <option
+          v-for="(nameValue, index) in collectionDefaults.ValueCollection.value.defaults"
+          :value="deriveProductName(nameValue)"
+          :key="deriveProductName(nameValue) + String(index)"
+        />
       </datalist>
     </td>
     <td class="buy-table__cell buy-table__head-cell--body">
-      <PriceInput placeholder="Price" :value="newProduct.price" @@price-changed="newProduct.price = $event" />
+      <PriceInput
+        placeholder="Price"
+        :value="newProduct.price"
+        @@price-changed="newProduct.price = $event"
+      />
     </td>
     <td class="buy-table__cell buy-table__head-cell--body">
-      <input class="form-control product-info__weight-amount" v-model.number="newProduct.weightAmount"
-        placeholder="Amount" step="0.001" type="number" />
+      <input
+        class="form-control product-info__weight-amount"
+        v-model.number="newProduct.weightAmount"
+        placeholder="Amount"
+        step="0.001"
+        type="number"
+      />
     </td>
     <td class="buy-table__cell buy-table__head-cell--body">
-      <select class="form-control custom-select product-info__measure" v-model="newProduct.measure">
-        <option v-for="measureValue in ValueCollection.measures" :key="measureValue + Date.now()">
+      <select
+        class="form-control custom-select product-info__measure"
+        v-model="newProduct.measure"
+      >
+        <option
+          v-for="measureValue in collectionDefaults.ValueCollection.value.measures"
+          :key="measureValue + Date.now()"
+        >
           {{ measureValue }}
         </option>
       </select>
     </td>
     <td class="buy-table__cell buy-table__head-cell--body">
-      <input class="form-control product-info__description" v-model.trim="newProduct.description"
-        placeholder="Description" list="product-descriptions" type="text" />
+      <input
+        class="form-control product-info__description"
+        v-model.trim="newProduct.description"
+        placeholder="Description"
+        list="product-descriptions"
+        type="text"
+      />
       <datalist id="product-descriptions">
-        <option v-for="(description, index) in ValueCollection.descriptions" :value="description"
-          :key="description + index" />
+        <option
+          v-for="(description, index) in collectionDefaults.ValueCollection.value.descriptions"
+          :value="description"
+          :key="description + index"
+        />
       </datalist>
     </td>
     <td class="buy-table__cell buy-table__head-cell--body">
-      <input class="form-control product-info__discount" v-model.number="newProduct.discount" placeholder="Discount"
-        type="text" />
+      <input
+        class="form-control product-info__discount"
+        v-model.number="newProduct.discount"
+        placeholder="Discount"
+        type="text"
+      />
       <!-- pattern="d+\%?" -->
     </td>
     <td class="buy-table__cell buy-table__head-cell--body">
       <div class="product-info__buttons">
         <div class="form-check form-switch">
-          <input id="addToDefaults" class="form-check-input" v-model="toDefault" role="switch" type="checkbox" />
-          <label class="form-check-label" for="addToDefaults">add to defaults</label>
+          <input
+            id="addToDefaults"
+            class="form-check-input"
+            v-model="toDefault"
+            role="switch"
+            type="checkbox"
+          />
+          <label
+            class="form-check-label"
+            for="addToDefaults"
+          >add to defaults</label>
         </div>
-        <button class="btn btn-success btn-sm product-info__btn-add text-nowrap" type="button" ref="saveProductButton"
-          @click.prevent="sendProductToSave">
+        <button
+          class="btn btn-success btn-sm product-info__btn-add text-nowrap"
+          type="button"
+          ref="saveProductButton"
+          @click.prevent="sendProductToSave"
+        >
           Save product
         </button>
       </div>
@@ -121,7 +172,7 @@ onMounted(() => {
   </tr>
 </template>
 
-<style scoped>
+<style>
 .buy-table__cell {
   vertical-align: middle;
 }

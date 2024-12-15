@@ -24,6 +24,7 @@ export default defineNuxtConfig({
       },
     ],
     '@primevue/nuxt-module',
+    'nuxt-highcharts',
   ],
   primevue: {
     options: {

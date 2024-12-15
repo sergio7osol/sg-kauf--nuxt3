@@ -9,6 +9,7 @@ import {
   getProductDefaults,
   createProduct,
   removeProduct,
+  getProductTimelineData,
   fetchWholeSum,
   fetchRangeSum,
 } from '@/services/ShoppingDateService';
@@ -16,6 +17,8 @@ import type DetailedDateInfo from '@/types/DetailedDateInfo';
 import type BuyInfo from '@/types/BuyInfo';
 import type Product from '@/types/Product';
 import type ResponseInfo from '@/types/ResponseInfo';
+import type { ProductWithDate } from '@/types/Product';
+import type { ProductTimelineRequestInfo } from '@/types/ProductTimelineInfo';
 
 export const useBuyDatesStore = defineStore('BuyDatesStore', {
   state: () => ({
@@ -25,7 +28,7 @@ export const useBuyDatesStore = defineStore('BuyDatesStore', {
     ValueCollection: {
       names: [] as string[],
       descriptions: [] as string[],
-      defaults: [] as Product[],
+      defaults: [] as (string | Product)[],
       measures: ['piece', 'kg'],
     },
   }),
@@ -294,6 +297,26 @@ export const useBuyDatesStore = defineStore('BuyDatesStore', {
         })
         .catch(function (err) {
           console.log('Fetch Error :-S', err);
+        });
+    },
+    getProductTimelineInfo(productRequestInfo: ProductTimelineRequestInfo) {
+      let { name, measure, shopName } = productRequestInfo;
+
+      if (!(name && measure && shopName)) {
+        console.log('Not enough data provided for requesting product timeline.');
+        console.log(`Provided data: name: ${name}, measure: ${measure}, shopName: ${shopName}`);
+        return this._breakPromiseExecution();
+      }
+
+      const nameEncoded = encodeURIComponent(name);
+      const shopNameEncoded = encodeURIComponent(shopName);
+      let url = `name=${nameEncoded}&measure=${measure}&shopName=${shopNameEncoded}`;
+
+      return getProductTimelineData(url)
+        .then((data: ProductWithDate[] | false) => data)
+        .catch(function (err) {
+          console.log('Fetch Error :-S', err);
+          return false;
         });
     },
     _breakPromiseExecution() {

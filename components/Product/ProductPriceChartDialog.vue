@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { storeInjectionKey } from '~~/store/default';
-import type { ProductWithDate } from "~~/types/Product";
-import type { ProductTimelineRequestInfo } from "~~/types/ProductTimelineInfo";
-import type SgKaufState from "~~/types/SgKaufState";
-import type SgKaufMethods from '~~/types/SgKaufMethods';
-import type { Measure, ShopName } from "../../types/StaticBuyInfoTypes";
+import { useBuyDatesStore } from '@/stores/BuyDatesStore';
+import type { ProductWithDate } from "@/types/Product";
+import type { ProductTimelineRequestInfo } from "@/types/ProductTimelineInfo";
+import type { Measure, ShopName } from "@/types/StaticBuyInfoTypes";
 
 const props = defineProps<{
   showDialog: boolean;
@@ -16,11 +14,8 @@ const emit = defineEmits<{
   (e: "@close-dialog"): void;
 }>();
 
-const store = inject(storeInjectionKey) as {
-  state: SgKaufState,
-  methods: SgKaufMethods
-};
-
+const buyDatesStore = useBuyDatesStore();
+const { activeDate } = storeToRefs(useBuyDatesStore());
 const priceTimeline = ref<[number, number][]>([]);
 
 const showComparisonGraph = (productTimelineRequest: ProductTimelineRequestInfo) => {
@@ -37,8 +32,7 @@ const showComparisonGraph = (productTimelineRequest: ProductTimelineRequestInfo)
     return false;
   }
 
-  store.methods
-    .getProductTimelineInfo(productTimelineRequest)
+  buyDatesStore.getProductTimelineInfo(productTimelineRequest)
     .then((result: ProductWithDate[] | false) => {
       if (!(result && result.length)) return false;
 
@@ -71,15 +65,15 @@ watch(props, ({ productName, measure, shopName }) => {
 </script>
 
 <template>
-  <Dialog
+  <PrimeDialog
     :visible="showDialog"
     :breakpoints="{ '960px': '75vw', '640px': '90vw' }"
     :style="{ width: '50vw' }"
     :maximizable="true"
     :modal="true"
-	  :dismissable-mask="true"
+    :dismissable-mask="true"
   >
-    <p>Active date: {{ store.state.activeDate.date }}</p>
+    <p>Active date: {{ activeDate.date }}</p>
     <p>
       <b>{{ priceTimeline.length }}</b> buys
     </p>
@@ -90,8 +84,18 @@ watch(props, ({ productName, measure, shopName }) => {
     />
 
     <template #footer>
-      <Button label="Close" icon="pi pi-times" @click="emit('@close-dialog')" autofocus />
-      <!-- <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="" /> -->
+      <PrimeButton
+        label="Close"
+        icon="pi pi-times"
+        @click="emit('@close-dialog')"
+        autofocus
+      />
+      <PrimeButton
+        label="Yes"
+        icon="pi pi-check"
+        class="p-button-text"
+        @click=""
+      />
     </template>
-  </Dialog>
+  </PrimeDialog>
 </template>
