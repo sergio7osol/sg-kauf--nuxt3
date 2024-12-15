@@ -9,12 +9,12 @@ export default defineNuxtConfig({
     port: 3001,
   },
   css: [
-    "bootstrap/dist/css/bootstrap.min.css",
+    'bootstrap/dist/css/bootstrap.min.css',
     // "primevue/resources/themes/saga-blue/theme.css",
     // "primevue/resources/primevue.css",
-    // 'primeicons/primeicons.css',
-    "@/assets/styles/variables.css",
-    "@/assets/styles/main.css",
+    'primeicons/primeicons.css',
+    '@/assets/styles/variables.css',
+    '@/assets/styles/main.css',
   ],
   modules: [
     [
@@ -23,7 +23,7 @@ export default defineNuxtConfig({
         autoImports: ['defineStore', 'acceptHMRUpdate'],
       },
     ],
-    '@primevue/nuxt-module'
+    '@primevue/nuxt-module',
   ],
   primevue: {
     options: {
@@ -37,6 +37,9 @@ export default defineNuxtConfig({
           cssLayer: false,
         },
       },
+    },
+    components: {
+      prefix: 'Prime',
     },
   },
   routeRules: {

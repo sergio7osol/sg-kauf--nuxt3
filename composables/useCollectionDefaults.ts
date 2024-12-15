@@ -8,7 +8,14 @@ export default function useCollectionDefaults() {
   const findDefaultValue = (event: Event): Product | string => {
     const target = event.target as HTMLInputElement;
     const currentValue = target.value;
-    const foundDefault = ValueCollection.value.defaults.find((defaultProductInfo) => defaultProductInfo.name === currentValue);
+    const trimmedCurrentValue = currentValue.trim();
+    const foundDefault = ValueCollection.value.defaults.find((collectionItem) => {
+      if (typeof collectionItem === 'string') {
+        return collectionItem === trimmedCurrentValue;
+      } else {
+        return collectionItem?.name === trimmedCurrentValue;
+      }
+    });
 
     return foundDefault ? foundDefault : currentValue;
   };

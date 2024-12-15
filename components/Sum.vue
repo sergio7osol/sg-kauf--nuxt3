@@ -74,11 +74,11 @@ const activeCurrency = computed<Currency | string>(() => {  // TODO: make conver
       <div class="sum__payment mt-2">
         <div class="sum__cost-col">
           <span class="sum__payment-name">Cost: </span>
-          <span class="sum__payment-value">{{roundedCost}}</span>
+          <span class="sum__payment-value">{{ roundedCost }}</span>
         </div>
         <div class="sum__cost-col">
           <span class="sum__payment-name">Discount: </span>
-          <span class="sum__payment-value">{{roundedDiscount}}</span>
+          <span class="sum__payment-value">{{ roundedDiscount }}</span>
         </div>
       </div>
     </div>

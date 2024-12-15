@@ -1,4 +1,9 @@
 {
     "singleQuote": true,
-    "printWidth": 200
+    "printWidth": 300,
+    "tabWidth": 2,
+    "vueIndentScriptAndStyle": true,
+    "htmlWhitespaceSensitivity": "ignore",
+    "html.format.wrapAttributes": "preserve",
+    "singleAttributePerLine": true
 }

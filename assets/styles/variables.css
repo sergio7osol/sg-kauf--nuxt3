@@ -1,11 +1,15 @@
 :root {
     --default-font-family: 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial',
         'Noto Sans', 'Liberation Sans', 'sans-serif';
+
+    --control-dark-border-color: #343a40;
+
     --default-text-color: #000;
     --default-text-size: 1rem;
     --default-bg-color: #fff;
+    --default-surface-color: #fff;
 
-    --default-menu-bg-color: #343a40;
+    --default-menu-bg-color: var(--control-dark-border-color);
     --default-menu-color: #fff;
     --default-menu-separator-color: #bb88;
     --default-menu-f-size: 18px;
@@ -19,11 +23,6 @@
 
     --default-table-bg-color: #fff;
 
-    --weather-title-line-color: #fff;
-    --weather-title-line-bg: #1257ab;
-    --weather-header-body-color: #060606;
-    --weather-header-body-bg-color: #f7f7f7;
-    --weather-header-body-side-color: #ffcf15;
-    --weather-header-cell-border-light-color: #6297e4;
-    --weather-body-cell-top-border-light-color: #d1e4ff;
+    --primary-control-bg-color: var(--default-bg-color);
+    --primary-control-border-color: #dee2e6;
 }
